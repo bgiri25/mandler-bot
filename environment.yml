@@ -1,0 +1,19 @@
+# Export e n v i r o n m e n t s p e c i f i c a t i o n
+mamba env export > e n v i r o n m e n t . yml
+# ( or : conda env export > e n v i r o n m e n t . yml )
+# Or manual creation :
+# e n v i r o n m e n t . yml
+name : nsc2026
+channels :
+- conda - forge
+- defaults
+d e p e n d e n c i e s :
+- python =3.11
+- numpy
+- m a t p l o t l i b
+- scipy
+- numba
+- pytest
+- pytest - cov
+- dask
+- d i s t r i b u t e d
