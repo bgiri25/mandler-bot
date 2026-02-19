@@ -1,17 +1,141 @@
 """
-M a n d e l b r o t Set Ge n er at o r
-Author : [ Your Name ]
-Course : Nu me r ic al S c i e n t i f i c Co mp u ti ng """
-def f ( x ) :
-	"""
-		Example function .
-		P a r a m e t e r s
-		- - - - - - - - - -
-		x : float
-		Input value
-		Returns
-		- - - - - - -
-		float
-		Output value
-	"""
-# TODO : Im pl e me nt the a lg o ri th m
+Naive Mandelbrot set generator.
+
+Implements the steps from the assignment:
+ - mandelbrot_point: iteration count for a single complex number
+ - mandelbrot_grid: compute a 2D grid of iteration counts using nested loops
+ - timing of a 1024x1024 grid
+ - visualization with matplotlib
+"""
+
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
+    """
+    Step 2: Mandelbrot for a single point.
+
+    Parameters
+    ----------
+    c : complex
+        Complex parameter for the iteration z_{n+1} = z_n^2 + c.
+    max_iter : int
+        Maximum number of iterations.
+
+    Returns
+    -------
+    int
+        Iteration count until escape; returns max_iter if it never escapes
+        (e.g. c = 0).
+    """
+    z = 0 + 0j
+    for n in range(max_iter):
+        z = z * z + c
+        if (z.real * z.real + z.imag * z.imag) > 4.0:
+            return n
+    return max_iter
+
+
+def mandelbrot_grid(
+    xmin: float = -2.0,
+    xmax: float = 1.0,
+    ymin: float = -1.5,
+    ymax: float = 1.5,
+    width: int = 100,
+    height: int = 100,
+    max_iter: int = 80,
+) -> np.ndarray:
+    """
+    Step 3: Compute Mandelbrot set on a grid using nested loops.
+
+    Creates a mesh of complex numbers and calls mandelbrot_point for each.
+
+    Returns
+    -------
+    np.ndarray
+        2D array of iteration counts with shape (height, width).
+    """
+    # 1D coordinates
+    xs = np.linspace(xmin, xmax, width)
+    ys = np.linspace(ymin, ymax, height)
+
+    # 2D array for iteration counts
+    iters = np.zeros((height, width), dtype=int)
+
+    # Nested loops over the grid
+    for j in range(height):
+        for i in range(width):
+            c = xs[i] + 1j * ys[j]
+            iters[j, i] = mandelbrot_point(c, max_iter=max_iter)
+
+    return iters
+
+
+def plot_mandelbrot(
+    grid: np.ndarray,
+    xmin: float = -2.0,
+    xmax: float = 1.0,
+    ymin: float = -1.5,
+    ymax: float = 1.5,
+    cmap: str = "hot",
+    filename: str | None = None,
+) -> None:
+    """
+    Step 5: Visualize the Mandelbrot iterations using imshow.
+
+    Parameters
+    ----------
+    grid : np.ndarray
+        2D array of iteration counts.
+    xmin, xmax, ymin, ymax : float
+        Plot extent in the complex plane.
+    cmap : str
+        Matplotlib colormap name ('hot', 'viridis', 'twilight', ...).
+    filename : str or None
+        If given, save the figure with this filename using plt.savefig().
+    """
+    plt.figure(figsize=(8, 6))
+    plt.imshow(
+        grid,
+        extent=[xmin, xmax, ymin, ymax],
+        origin="lower",
+        cmap=cmap,
+        interpolation="nearest",
+    )
+    plt.colorbar(label="Iteration count")
+    plt.xlabel("Re(c)")
+    plt.ylabel("Im(c)")
+    plt.title(f"Mandelbrot set (cmap={cmap})")
+    if filename is not None:
+        plt.savefig(filename, dpi=150, bbox_inches="tight")
+        print(f"Saved image to {filename}")
+    plt.show()
+
+
+if __name__ == "__main__":
+    # Step 2: quick sanity checks for mandelbrot_point
+    max_iter = 80
+
+    # Step 3–4: compute a grid and measure time
+    width, height = 1024, 1024
+    print(f"Computing Mandelbrot grid {width}x{height} ...")
+    t0 = time.time()
+    grid = mandelbrot_grid(width=width, height=height, max_iter=max_iter)
+    t1 = time.time()
+    elapsed = t1 - t0
+    print(f"Computation took {elapsed:.3f} seconds")
+    print(f"Grid shape: {grid.shape}, max iteration in grid: {grid.max()}")
+
+    # Step 5: visualize with different colormaps
+    for cmap in ["hot", "viridis", "twilight"]:
+        plot_mandelbrot(
+            grid,
+            xmin=-2.0,
+            xmax=1.0,
+            ymin=-1.5,
+            ymax=1.5,
+            cmap=cmap,
+            filename=f"mandelbrot_{cmap}.png",
+        )
