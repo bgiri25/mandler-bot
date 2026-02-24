@@ -7,7 +7,7 @@ name : nsc2026
 channels :
 - conda - forge
 - defaults
-d e p e n d e n c i e s :
+dependencies :
 - python =3.11
 - numpy
 - m a t p l o t l i b
