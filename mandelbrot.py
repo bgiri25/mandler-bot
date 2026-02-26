@@ -100,20 +100,22 @@ def sum_column(N, A):
 
 
 def memory_access_pattern():
-    N = 1
+    N = 100
     A = np.random.rand(N, N)
     A_f = np.asfortranarray(A)
     time1 = sum_row(N, A)
     time2 = sum_column(N, A)
-    elapsed = time2 - time1
     print(f"row wise computation took :{time1}" )
     print(f"sum wise computation took :{time2}" )
 
 
-    timeA_f1 = sum_row(N,A)
-    timeA_f2 = sum_column(N,A)
+    timeA_f1 = sum_row(N,A_f)
+    timeA_f2 = sum_column(N,A_f)
     elapsed = timeA_f2 - timeA_f1
-    print(f"column wise computation took :{elapsed}" )
+    print(f"row wise computation took for fortran:{timeA_f1}" )
+    print(f"row wise computation took for fortran:{timeA_f2}" )
+
+
 
 
 
@@ -186,3 +188,17 @@ if __name__ == "__main__":
 
 
    
+
+def benchmark ( func , * args , n_runs =3) :
+    """ Time func , return median of n_runs .
+    """
+    times = []
+    for _ in range ( n_runs ) :
+        t0 = time . perf_counter ()
+        result = func (* args )
+        times.append(time.perf_counter() - t0 )
+    median_t = statistics.median(times)
+
+    print(f"Median : {median_t :.4f }s"f "( min ={ min ( times ) :.4 f } , max ={max(times) :.4 f }) ")
+    return median_t , result
+    # t , M = be nc h ma rk ( my_mandelbrot , -2 , 1 , -1.5 , 1.5 , 1024 , 1024 , 100)
