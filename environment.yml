@@ -10,7 +10,7 @@ channels :
 dependencies :
 - python =3.11
 - numpy
-- m a t p l o t l i b
+- matplotlib
 - scipy
 - numba
 - pytest
