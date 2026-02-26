@@ -83,18 +83,39 @@ def mandelbrot_grid(
     iters[mask] = max_iter
     return iters
 
+
+def sum_row(N, A):
+    t0 = time.perf_counter()
+    for i in range(N):
+        rs = np.sum(A[i, :])
+    t1 = time.perf_counter()
+    return t1 - t0
+
+def sum_column(N, A):
+    t0 = time.perf_counter()
+    for i in range(N):
+        rs = np.sum(A[:, i])
+    t1 = time.perf_counter()
+    return t1 - t0
+
+
 def memory_access_pattern():
     N = 1
     A = np.random.rand(N, N)
-    t0r = time.perf_counter()
-    t0c = time.perf_counter()
-    for i in range(N): rs = np.sum(A[i, :])
-    t1 = time.perf_counter()
-    print(t1)
-    
-    for j in range(N): cs = np.sum(A[:, j])
-    t2 = time.perf_counter()
-    print (t2)
+    A_f = np.asfortranarray(A)
+    time1 = sum_row(N, A)
+    time2 = sum_column(N, A)
+    elapsed = time2 - time1
+    print(f"row wise computation took :{time1}" )
+    print(f"sum wise computation took :{time2}" )
+
+
+    timeA_f1 = sum_row(N,A)
+    timeA_f2 = sum_column(N,A)
+    elapsed = timeA_f2 - timeA_f1
+    print(f"column wise computation took :{elapsed}" )
+
+
 
 
 
