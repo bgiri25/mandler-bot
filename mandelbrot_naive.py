@@ -7,6 +7,7 @@ pure Python types (lists of lists) instead of NumPy arrays.
 
 import time
 import matplotlib.pyplot as plt
+import statistics
 
 
 def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
@@ -88,19 +89,30 @@ def plot_mandelbrot(
 
     plt.show()
 
+    
+
+def benchmark_naive(width,height,max_itr):
+        print(f"Computing Mandelbrot grid {width}x{height} (no NumPy) ...")
+        t0 = time.perf_counter()
+        grid = mandelbrot_grid(width=width, height=height, max_iter=max_itr)
+        perfomance_list = []
+        # Compute max iteration by scanning the list-of-lists
+        for _ in range(3):
+            t1 = time.perf_counter()
+            elapsed = (t1 - t0) 
+            perfomance_list.append(elapsed)
+        median_time = statistics.median(perfomance_list)
+        print(f"Computation took {elapsed:.3f} seconds for naive implementation")     
+        return median_time,grid
+
 
 if __name__ == "__main__":
     max_iter = 80
     width, height = 1024, 1024
-    print(f"Computing Mandelbrot grid {width}x{height} (no NumPy) ...")
-    t0 = time.time()
-    grid = mandelbrot_grid(width=width, height=height, max_iter=max_iter)
-    t1 = time.time()
-    elapsed = t1 - t0
-    # Compute max iteration by scanning the list-of-lists
-    max_in_grid = max(max(row) for row in grid)
-    print(f"Computation took {elapsed:.3f} seconds")
-    print(f"Grid size: {len(grid)}x{len(grid[0])}, max iteration in grid: {max_in_grid}")
+
+    t,grid = benchmark_naive(width,height,max_iter)
+
+
 
     for cmap in ["hot", "viridis", "twilight"]:
         plot_mandelbrot(
@@ -112,4 +124,6 @@ if __name__ == "__main__":
             cmap=cmap,
             filename=f"mandelbrot_no_numpy_{cmap}.png",
         )
+
+    
 
