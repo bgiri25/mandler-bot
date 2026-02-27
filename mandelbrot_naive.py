@@ -7,15 +7,17 @@ pure Python types (lists of lists) instead of NumPy arrays.
 
 import time
 import matplotlib.pyplot as plt
+from memory_profiler import profile
+
 import statistics
 
-
+@profile
 def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
     """Iteration count for a single complex number."""
     z = 0 + 0j
     for n in range(max_iter):
         z = z * z + c
-        if (z.real * z.real + z.imag * z.imag) > 4.0:
+        if (z.real * z.real + z.imag * z.imag) > 2.0:
             return n
     return max_iter
 
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 
 
 
-    for cmap in ["hot", "viridis", "twilight"]:
+    for cmap in ["hot"]:
         plot_mandelbrot(
             grid,
             xmin=-2.0,
