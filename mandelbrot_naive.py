@@ -8,17 +8,45 @@ pure Python types (lists of lists) instead of NumPy arrays.
 import time
 import matplotlib.pyplot as plt
 from memory_profiler import profile
+from numba import jit, njit 
+import numpy as np
 
 import statistics
 
-@profile
+
+@njit
+def mandelbrot_naive_numba(xmin, xmax, ymin, ymax, width, height, max_iter=100):
+    """Fully JIT-compiled Mandelbrot (Numba).
+
+    Parameters are the same as the pure-Python version. Returns a
+    (height, width) int32 NumPy array with iteration counts.
+    """
+    x = np.linspace(xmin, xmax, width)
+    y = np.linspace(ymin, ymax, height)
+    result = np.zeros((height, width), dtype=np.int32)
+
+    for i in range(height):  # compiled loop
+        for j in range(width):  # compiled loop
+            c = x[j] + 1j * y[i]
+            z = 0 + 0j
+            n = 0
+            while n < max_iter and (z.real * z.real + z.imag * z.imag) <= 4.0:
+                z = z * z + c
+                n += 1
+            result[i, j] = n
+
+    return result
+
+
+
 def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
     """Iteration count for a single complex number."""
     z = 0 + 0j
     for n in range(max_iter):
-        z = z * z + c
+        
         if (z.real * z.real + z.imag * z.imag) > 2.0:
             return n
+        z = z * z + c
     return max_iter
 
 
@@ -113,7 +141,7 @@ if __name__ == "__main__":
     width, height = 1024, 1024
 
     t,grid = benchmark_naive(width,height,max_iter)
-
+    _ = mandelbrot_naive_numba(-2, 1, -1.5, 1.5, 64, 64)
 
 
     for cmap in ["hot"]:
