@@ -20,15 +20,15 @@ def bench ( fn , * args , runs =5) :
 grid= mandelbrot_grid(width=64, height=64, max_iter=100)
 
 _ = mandelbrot_naive_numba ( -2 , 1 , -1.5 , 1.5 , 64 , 64)
-t,grid_ = benchmark_naive(width=64, height=64, max_iter=100)
+_ = mandelbrot_grid( -2 , 1 , -1.5 , 1.5 , 64 , 64)
 
 t_full = bench ( mandelbrot_naive_numba , -2 , 1 , -1.5 , 1.5 , 1024 , 1024)
-# t_hybrid = bench ( benchmark_naive , width=1024, height=1024, max_iter=100)
+t_hybrid = bench ( mandelbrot_grid ,  -2 , 1 , -1.5 , 1.5 ,1024,1024)
 
 
-# print ( f " Hybrid : { t_hybrid :.3 f } s " )
-# print ( f " Fully compiled : { t_full :.3 f } s " )
-# print ( f " Ratio : { t_hybrid / t_full :.1 f } x " )
+print(f"Hybrid : {t_hybrid:.3f} s")
+print(f"Fully compiled : {t_full:.3f} s")
+print(f"Ratio : {t_hybrid / t_full:.1f} x")
 
 
 
