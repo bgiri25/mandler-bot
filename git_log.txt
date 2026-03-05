@@ -1,0 +1,96 @@
+2026-03-04 e6f3587 plot figures for two different datatype
+
+ mandelbrot_numba.py | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+2026-03-04 2a45e82  add mandelbrot_numba_typed method for data type optimzation
+
+ mandelbrot_numba.py | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+2026-03-04 83f8197 compare benchmark for all 3 different methods
+
+ benchmark.py | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+2026-03-04 58851d1 compare benchmark of different mandelbrot plotter
+
+ benchmark.py      | 10 +++++-----
+ mandelbrot_jit.py |  6 ++++++
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+2026-03-04 01bd61a remove unused code
+
+ benchmark.py | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+2026-03-02 1ea751e  use njit decorator to measure performance
+
+ mandelbrot_naive.py | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
+2026-02-27 c1978ef add add profile decorator
+
+ mandelbrot_naive.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+2026-02-27 3549443  run profile for naive and numpy benchmark
+
+ mandelbrot_mamba.py | 55 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mandelbrot_naive.py | 32 ++++++++++++++++++++++---------
+ 2 files changed, 78 insertions(+), 9 deletions(-)
+2026-02-27 ce42ba7 remove commented code
+
+ mandelbrot_numpy.py | 96 +++++++++++++++++------------------------------------
+ 1 file changed, 31 insertions(+), 65 deletions(-)
+2026-02-26 3c31b56  separate benchmark method to make it accessible
+
+ mandelbrot.py       | 204 ----------------------------------------------------
+ mandelbrot_mamba.py |   0
+ 2 files changed, 204 deletions(-)
+2026-02-26 8556b92 rename filename to numpy_mandelbrot.py inorder to match filename with the name used in lecture
+
+ mandelbrot_numpy.py | 204 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 204 insertions(+)
+2026-02-26 f823c3f rename filename to mandelbrot.py inorder to match filename with the name used in lecture
+
+ mandelbrot.py       |  26 ++++++------
+ mandelbrot_naive.py | 115 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 128 insertions(+), 13 deletions(-)
+2026-02-26 4ff1118 remove extra space while naming plugins
+
+ environment.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+2026-02-26 7da33f5 comment unused method
+
+ mandelbrot.py | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
+2026-02-26 cbe7471 refactor sum row and column method
+
+ mandelbrot.py | 39 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
+2026-02-24 c77b1fd remove typo from environment file
+
+ environment.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+2026-02-19 2d2f66a comment unused methods
+
+ mandelbrot.py | 45 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
+2026-02-19 7d4f059 replace python loop by fully vectorized loop using numpy
+
+ mandelbrot.py | 48 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 20 deletions(-)
+2026-02-19 a7dbb34 add a flag to show different visualization
+
+ mandelbrot.py | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+2026-02-19 2949a9a add naive_mandlebrot.py which doesn't contain numpy usage
+
+ naive_mandelbrot.py | 115 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
+2026-02-19 d7fa234 add mandelbrot code to generate mandlebrot plot
+
+ mandelbrot.py | 156 ++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 140 insertions(+), 16 deletions(-)
+2026-02-05 65a3fe7 add mandelbrot file
+
+ mandelbrot.py | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+2026-02-05 326fec6 Add Python environment specification
+
+ environment.yml | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
