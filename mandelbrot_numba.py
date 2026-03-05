@@ -1,8 +1,50 @@
+"""
+Mandelbrot Set Generator
+Author : Bikash Giri
+Course : Numerical Scientific Computing 2026
+"""
+
 from numba import njit
 import numpy as np, time
 import matplotlib.pyplot as plt
 
-from mandelbrot_naive import mandelbrot_point
+
+
+@njit
+def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
+    """Iteration count for a single complex number."""
+    z = 0 + 0j
+    for n in range(max_iter):
+        
+        if (z.real * z.real + z.imag * z.imag) > 2.0:
+            return n
+        z = z * z + c
+    return max_iter
+
+@njit
+def mandelbrot_point_numba(xmin, xmax, ymin, ymax, width, height, max_iter=100):
+    """Fully JIT-compiled Mandelbrot (Numba).
+
+    Parameters are the same as the pure-Python version. Returns a
+    (height, width) int32 NumPy array with iteration counts.
+    """
+    x = np.linspace(xmin, xmax, width)
+    y = np.linspace(ymin, ymax, height)
+    result = np.zeros((height, width), dtype=np.int32)
+
+    for i in range(height):  # compiled loop
+        for j in range(width):  # compiled loop
+            c = x[j] + 1j * y[i]
+            z = 0 + 0j
+            n = 0
+            while n < max_iter and (z.real * z.real + z.imag * z.imag) <= 4.0:
+                z = z * z + c
+                n += 1
+            result[i, j] = n
+
+    return result
+
+
 @njit
 def mandelbrot_numba_typed(xmin, xmax, ymin, ymax,
                            width, height, max_iter=100, dtype=np.float64):
