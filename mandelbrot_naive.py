@@ -1,4 +1,10 @@
 """
+Mandelbrot Set Generator
+Author : Bikash Giri
+Course : Numerical Scientific Computing 2026
+"""
+
+"""
 Naive Mandelbrot set generator without using NumPy.
 
 This mirrors the functionality of mandelbrot.py, but uses only
@@ -12,6 +18,9 @@ from numba import jit, njit
 import numpy as np
 
 import statistics
+
+
+
 
 
 @njit
@@ -44,9 +53,9 @@ def mandelbrot_point(c: complex, max_iter: int = 80) -> int:
     z = 0 + 0j
     for n in range(max_iter):
         
-        if (z.real * z.real + z.imag * z.imag) > 2.0:
+        z = z*z + c
+        if (abs(z) > 2):
             return n
-        z = z * z + c
     return max_iter
 
 
@@ -120,7 +129,7 @@ def plot_mandelbrot(
     plt.show()
 
     
-
+@profile
 def benchmark_naive(width,height,max_itr):
         print(f"Computing Mandelbrot grid {width}x{height} (no NumPy) ...")
         t0 = time.perf_counter()
@@ -138,10 +147,11 @@ def benchmark_naive(width,height,max_itr):
 
 if __name__ == "__main__":
     max_iter = 80
-    width, height = 1024, 1024
+    width, height = 600, 600
 
     t,grid = benchmark_naive(width,height,max_iter)
     _ = mandelbrot_naive_numba(-2, 1, -1.5, 1.5, 64, 64)
+
 
 
     for cmap in ["hot"]:
