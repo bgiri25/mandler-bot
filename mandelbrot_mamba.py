@@ -1,8 +1,15 @@
+"""
+Mandelbrot Set Generator
+Author : Bikash Giri
+Course : Numerical Scientific Computing 2026
+"""
+
 import cProfile
 import pstats
 
 from mandelbrot_naive import benchmark_naive
 from mandelbrot_numpy import benchmark_numpy
+import numpy as np
 
 
 def profile_benchmarks():
@@ -24,32 +31,30 @@ def profile_benchmarks():
 if __name__ == "__main__":
     profile_benchmarks()
 
-    # Local import so this module can be imported without requiring numpy at import-time
-    import numpy as np
 
-    def mandelbrot_naive(xmin, xmax, ymin, ymax, width, height, max_iter=100):
-        """Generate a Mandelbrot set using a straightforward numpy-backed loop.
+def mandelbrot_naive(xmin, xmax, ymin, ymax, width, height, max_iter=100):
+    """Generate a Mandelbrot set using a straightforward numpy-backed loop.
 
-        This is kept here only for convenience; the project also provides
-        `benchmark_naive` in `mandelbrot_naive.py`.
-        """
-        x = np.linspace(xmin, xmax, width)
-        y = np.linspace(ymin, ymax, height)
-        result = np.zeros((height, width), dtype=int)
+    This is kept here only for convenience; the project also provides
+    `benchmark_naive` in `mandelbrot_naive.py`.
+    """
+    x = np.linspace(xmin, xmax, width)
+    y = np.linspace(ymin, ymax, height)
+    result = np.zeros((height, width), dtype=int)
 
-        for i in range(height):
-            for j in range(width):
-                c = x[j] + 1j * y[i]
-                z = 0 + 0j
-                for n in range(max_iter):
-                    if abs(z) > 2:
-                        result[i, j] = n
-                        break
-                    z = z * z + c
-                else:
-                    result[i, j] = max_iter
+    for i in range(height):
+        for j in range(width):
+            c = x[j] + 1j * y[i]
+            z = 0 + 0j
+            for n in range(max_iter):
+                if abs(z) > 2:
+                    result[i, j] = n
+                    break
+                z = z * z + c
+            else:
+                result[i, j] = max_iter
 
-        # Example usage (uncomment to run):
-        # img = mandelbrot_naive(-2.0, 1.0, -1.0, 1.0, 400, 400)
-        # print(img.shape)
-        return result
+    # Example usage (uncomment to run):
+    # img = mandelbrot_naive(-2.0, 1.0, -1.0, 1.0, 400, 400)
+    # print(img.shape)
+    return result
