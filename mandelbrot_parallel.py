@@ -43,8 +43,9 @@ def _worker(args):
     return mandelbrot_chunk(*args)
 
 def mandelbrot_parallel(N, x_min, x_max, y_min, y_max,
-                        max_iter=100, n_workers=4):
-    chunk_size = max(1, N // n_workers)
+                        max_iter=100, n_workers=4,n_chunks=None):
+
+    chunk_size = n_chunks if n_chunks is not None else max(1, N // n_workers)
     chunks = []
     row = 0
     while row < N:
@@ -80,9 +81,13 @@ def plot_mandelbrot(grid: np.ndarray, x_min: float, x_max: float,
     plt.show()
 
 if __name__ == '__main__':
-    result = mandelbrot_parallel(1024, -2.5, 1.0, -1.25, 1.25, n_workers=4)
+    chunk_size = 128
+    t0 = time.perf_counter() 
+    result = mandelbrot_parallel(1024, -2.5, 1.0, -1.25, 1.25, n_workers=1, n_chunks=chunk_size)
+    t1 = time.perf_counter() - t0
+    print(f"Computed Mandelbrot set in {t1:.3f} for {chunk_size} chunks")   
     # show and save a quick plot of the computed Mandelbrot set
-    plot_mandelbrot(result, -2.5, 1.0, -1.25, 1.25, filename="mandelbrot_parallel.png")
+    # plot_mandelbrot(result, -2.5, 1.0, -1.25, 1.25, filename="mandelbrot_parallel.png")
     # --- MP2 M3: benchmark (in __main__ block) ---
     N, max_iter = 1024, 100
     X_MIN, X_MAX, Y_MIN, Y_MAX = -2.5, 1.0, -1.25, 1.25
