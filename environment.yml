@@ -11,9 +11,11 @@ dependencies :
 - python =3.11
 - numpy
 - matplotlib
+- line_profiler
 - scipy
 - numba
 - pytest
 - pytest - cov
 - dask
-- d i s t r i b u t e d
+- memory_profiler
+- distributed
