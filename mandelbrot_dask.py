@@ -82,11 +82,20 @@ if __name__ == "__main__":
         Tp = statistics.median(run_times)
         times.append(Tp)
 
-        # 🔹 LIF calculation
+        speedup = t1 / Tp
+        vs_1x = Tp / t1
+        lif = (p * Tp / t1) - 1
+
+
         lif = (p * Tp / t1) - 1
         lif_values.append(lif)
 
-        print(f"n_chunks={n_chunks:3d} | time={Tp:.3f}s | LIF={lif:.3f}")
+
+        
+        print(f"{n_chunks:8d} | {Tp:8.3f} | {vs_1x:6.2f} | {speedup:7.2f} | {lif:6.2f}")
+        print("\n n_chunks | time(s) | vs 1x | speedup |  LIF")
+        print("-" * 50)
+
         # 🔹 Plot (log scale on x-axis)
     plt.figure()
     plt.plot(chunk_values, times, marker='o')
