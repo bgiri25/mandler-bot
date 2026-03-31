@@ -2,6 +2,8 @@ from dask import delayed
 from dask.distributed import Client, LocalCluster
 import dask, numpy as np, time, statistics
 from numba import njit
+import matplotlib.pyplot as plt
+
 
 from mandelbrot_parallel import mandelbrot_chunk
 
@@ -54,9 +56,64 @@ if __name__ == "__main__":
     client.run(lambda: mandelbrot_chunk(0, 8, 8, X_MIN, X_MAX, # warm up all workers
     Y_MIN, Y_MAX, 10))
     times = []
+    
     for _ in range(3):
         t0 = time.perf_counter()
         result = mandelbrot_dask(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter)
         times.append(time.perf_counter() - t0)
-    print(f"Dask local (n_chunks=32): {statistics.median(times):.3f} s")
+    t1 = statistics.median(times)
+    print(f"Dask local (n_chunks=32): {t1:.3f} s")
+
+    # 🔹 Sweep chunk counts
+    chunk_values = [1, 2, 4, 8, 16, 32, 64, 128]
+    times = []
+    lif_values = []
+
+    p = 8  # number of workers
+
+    for n_chunks in chunk_values:
+        run_times = []
+
+        for _ in range(3):
+            t0 = time.perf_counter()
+            mandelbrot_dask(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter, n_chunks=n_chunks)
+            run_times.append(time.perf_counter() - t0)
+
+        Tp = statistics.median(run_times)
+        times.append(Tp)
+
+        # 🔹 LIF calculation
+        lif = (p * Tp / t1) - 1
+        lif_values.append(lif)
+
+        print(f"n_chunks={n_chunks:3d} | time={Tp:.3f}s | LIF={lif:.3f}")
+        # 🔹 Plot (log scale on x-axis)
+    plt.figure()
+    plt.plot(chunk_values, times, marker='o')
+    plt.xscale('log')
+    plt.xlabel("Number of Chunks (log scale)")
+    plt.ylabel("Wall Time (s)")
+    plt.title("Dask Performance vs Chunk Count")
+    plt.grid()
+
+    plt.figure()
+    plt.plot(chunk_values, lif_values, marker='o')
+    plt.xscale('log')
+    plt.xlabel("Number of Chunks (log scale)")
+    plt.ylabel("LIF")
+    plt.title("LIF vs Chunk Count")
+    plt.grid()
+
+    plt.show()
+
     client.close(); cluster.close()
+
+
+
+
+
+
+
+
+
+   
