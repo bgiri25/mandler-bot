@@ -5,7 +5,7 @@ from multiprocessing import Pool
 import time, os, statistics
 import matplotlib.pyplot as plt
 
-@njit
+@njit(cache = True)
 def mandelbrot_pixel(c_real, c_imag, max_iter):
     z_real = 0.0
     z_imag = 0.0
@@ -21,7 +21,7 @@ def mandelbrot_pixel(c_real, c_imag, max_iter):
         z_imag = z_imag_new
     return max_iter
 
-@njit
+@njit(cache = True)
 def mandelbrot_chunk(row_start, row_end, N,
                      x_min, x_max, y_min, y_max, max_iter):
     out = np.empty((row_end - row_start, N), dtype=np.int32)
