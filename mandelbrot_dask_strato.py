@@ -7,6 +7,16 @@ import matplotlib.pyplot as plt
 
 from mandelbrot_parallel import mandelbrot_chunk
 
+
+def benchmark ( fn , * args , runs =5) :
+    fn (* args ) # extra warm - up
+    times = []
+    for _ in range ( runs ) :
+        t0 = time . perf_counter ()
+        fn (* args )
+        times . append ( time . perf_counter () - t0 )
+    return statistics . median ( times )
+
 @njit(cache=True)
 def mandelbrot_pixel(c_real, c_imag, max_iter):
     z_real = 0.0
@@ -36,7 +46,7 @@ def mandelbrot_chunk(row_start, row_end, N,
             out[r, col] = mandelbrot_pixel(x_min + col * dx, c_imag, max_iter)
     return out
 # mandelbrot_chunk: your @njit(cache=True) function from L04/L05
-def mandelbrot_dask(N, x_min, x_max, y_min, y_max,
+def mandelbrot_dask_strato(N, x_min, x_max, y_min, y_max,
 max_iter=100, n_chunks=32):
     chunk_size = max(1, N // n_chunks)
     tasks, row = [], 0
@@ -59,7 +69,7 @@ if __name__ == "__main__":
     
     for _ in range(3):
         t0 = time.perf_counter()
-        result = mandelbrot_dask(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter)
+        result = mandelbrot_dask_strato(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter)
         times.append(time.perf_counter() - t0)
     t1 = statistics.median(times)
     print(f"Dask local (n_chunks=32): {t1:.3f} s")
@@ -76,7 +86,7 @@ if __name__ == "__main__":
 
         for _ in range(3):
             t0 = time.perf_counter()
-            mandelbrot_dask(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter, n_chunks=n_chunks)
+            mandelbrot_dask_strato(N, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter, n_chunks=n_chunks)
             run_times.append(time.perf_counter() - t0)
 
         Tp = statistics.median(run_times)
@@ -116,6 +126,13 @@ if __name__ == "__main__":
     plt.show()
 
     client.close(); 
+    N = [1024, 4096, 8192]
+    for n in N:
+        t_bench = benchmark(mandelbrot_dask_strato,n, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iter, n_chunks=32)
+
+        print(f"Benchmark for N={n} completed.")
+        print(f"Time taken: {t_bench:.3f} seconds")
+
     # cluster.close()
 
 
