@@ -42,20 +42,27 @@ def mandelbrot_serial(N, x_min, x_max, y_min, y_max, max_iter=100):
 def _worker(args):
     return mandelbrot_chunk(*args)
 
-def mandelbrot_parallel(N, x_min, x_max, y_min, y_max,
-                        max_iter=100, n_workers=4,n_chunks=None):
-
-    chunk_size = n_chunks if n_chunks is not None else max(1, N // n_workers)
-    chunks = []
-    row = 0
+def mandelbrot_parallel(
+    N, x_min, x_max, y_min, y_max, max_iter=100, n_workers=4, n_chunks=None, pool=None
+):
+    if n_chunks is None:
+        n_chunks = n_workers
+    chunk_size = max(1, N // n_chunks)
+    chunks, row = [], 0
     while row < N:
         row_end = min(row + chunk_size, N)
         chunks.append((row, row_end, N, x_min, x_max, y_min, y_max, max_iter))
         row = row_end
-    with Pool(processes=n_workers) as pool:
-        pool.map(_worker, chunks)  # un-timed warm-up: Numba JIT in workers
+
+    if pool is not None:
         parts = pool.map(_worker, chunks)
+    else:
+        with Pool(processes=n_workers) as pool:
+            pool.map(_worker, chunks)  # un-timed warm-up: Numba JIT in workers
+            parts = pool.map(_worker, chunks)
     return np.vstack(parts)
+
+
 
 
 def plot_mandelbrot(grid: np.ndarray, x_min: float, x_max: float,
@@ -79,6 +86,12 @@ def plot_mandelbrot(grid: np.ndarray, x_min: float, x_max: float,
     if filename:
         plt.savefig(filename, dpi=150, bbox_inches="tight")
     plt.show()
+
+
+def serial_fraction(speedup, p):
+    if p == 1:
+        return 0
+    return ((1 / speedup) - (1 / p)) / (1 - (1 / p))
 
 if __name__ == "__main__":
     N, max_iter = 1024, 100
