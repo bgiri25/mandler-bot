@@ -34,3 +34,17 @@ def test_mandelbrot_grid_shape_and_values():
             assert grid[j][i] == expected
 
 
+def test_mandelbrot_numpy_matches_naive():
+    """Compare small-grid outputs from the NumPy implementation and the
+    pure-Python naive implementation (values should match)."""
+    xmin, xmax, ymin, ymax = -2.0, 1.0, -1.0, 1.0
+    width, height, max_iter = 10, 8, 40
+
+    naive = mandelbrot_grid(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
+                            width=width, height=height, max_iter=max_iter)
+    np_res = mandelbrot_numpy(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
+                              width=width, height=height, max_iter=max_iter)
+
+    # Convert naive (list-of-lists) to numpy array for direct comparison
+    naive_arr = np.array(naive, dtype=np.int32)
+    npt.assert_array_equal(naive_arr, np_res)
